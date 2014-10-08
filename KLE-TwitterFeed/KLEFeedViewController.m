@@ -107,6 +107,25 @@
     }];
 }
 
+- (void)refreshTable:(UIRefreshControl *)refresh
+{
+    refresh.attributedTitle = [[NSAttributedString alloc] initWithString:@"Refreshing tweets.."];
+    
+    NSLog(@"Refreshing.. ");
+    
+    [self getFeed];
+    
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    
+    [formatter setDateFormat:@"MMM d, h:mm a"];
+    
+    NSString *lastUpdated = [NSString stringWithFormat:@"Last updated on %@", [formatter stringFromDate:[NSDate date]]];
+    
+    refresh.attributedTitle = [[NSAttributedString alloc] initWithString:lastUpdated];
+    
+    [refresh endRefreshing];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -122,7 +141,7 @@
     
     [twitterKey verifyCredentialsWithSuccessBlock:^(NSString *username) {
         [twitterKey getUserTimelineWithScreenName:@"TENDIGI" successBlock:^(NSArray *statuses) {
-            //
+            // load the tweets
             self.twitterFeed = [NSMutableArray arrayWithArray:statuses];
             [self.tableView reloadData];
         } errorBlock:^(NSError *error) {
@@ -131,6 +150,15 @@
     } errorBlock:^(NSError *error) {
         NSLog(@"%@", error.debugDescription);
     }];
+    
+    // refresh control
+    UIRefreshControl *refresh = [[UIRefreshControl alloc] init];
+    
+    refresh.attributedTitle = [[NSAttributedString alloc] initWithString:@"Pull to refresh"];
+    
+    [refresh addTarget:self action:@selector(refreshTable:) forControlEvents:UIControlEventValueChanged];
+    
+    self.refreshControl = refresh;
     
 }
 
