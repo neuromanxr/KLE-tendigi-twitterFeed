@@ -144,26 +144,6 @@
     }
 }
 
-//- (void)addNetworkObserver
-//{
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(HTTPOperationDidFinish:) name:AFNetworkingOperationDidFinishNotification object:nil];
-//}
-//
-//- (void)HTTPOperationDidFinish:(NSNotification *)notification
-//{
-//    AFHTTPRequestOperation *operation = (AFHTTPRequestOperation *)[notification object];
-//    if (![operation isKindOfClass:[AFHTTPRequestOperation class]]) {
-//        return;
-//    }
-//    
-//    if (operation.error) {
-//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Connection error" message:@"No connection to internet" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-//        
-//        NSLog(@"Not reachable");
-//        [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:YES];
-//    }
-//}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -201,7 +181,6 @@
     [[AFNetworkReachabilityManager sharedManager] startMonitoring];
     
     [self didNotConnect:[self connected]];
-//    [self addNetworkObserver];
     
 }
 
