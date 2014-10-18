@@ -10,6 +10,7 @@
 #import <Social/Social.h>
 #import "KLEFeedCell.h"
 #import "KLEFeedViewController.h"
+#import "AFNetworking.h"
 
 @interface KLEFeedViewController ()
 
@@ -123,8 +124,45 @@
     
     refresh.attributedTitle = [[NSAttributedString alloc] initWithString:lastUpdated];
     
+    [self didNotConnect:[self connected]];
+    
     [refresh endRefreshing];
 }
+
+- (BOOL)connected
+{
+    return [AFNetworkReachabilityManager sharedManager].reachable;
+}
+
+- (void)didNotConnect:(BOOL)connected
+{
+    if (connected == NO) {
+        NSLog(@"No connection");
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Connection error" message:@"No connection to internet" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        
+        [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:YES];
+    }
+}
+
+//- (void)addNetworkObserver
+//{
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(HTTPOperationDidFinish:) name:AFNetworkingOperationDidFinishNotification object:nil];
+//}
+//
+//- (void)HTTPOperationDidFinish:(NSNotification *)notification
+//{
+//    AFHTTPRequestOperation *operation = (AFHTTPRequestOperation *)[notification object];
+//    if (![operation isKindOfClass:[AFHTTPRequestOperation class]]) {
+//        return;
+//    }
+//    
+//    if (operation.error) {
+//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Connection error" message:@"No connection to internet" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+//        
+//        NSLog(@"Not reachable");
+//        [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:YES];
+//    }
+//}
 
 - (void)viewDidLoad
 {
@@ -159,6 +197,11 @@
     [refresh addTarget:self action:@selector(refreshTable:) forControlEvents:UIControlEventValueChanged];
     
     self.refreshControl = refresh;
+    
+    [[AFNetworkReachabilityManager sharedManager] startMonitoring];
+    
+    [self didNotConnect:[self connected]];
+//    [self addNetworkObserver];
     
 }
 
