@@ -124,6 +124,7 @@
     
     refresh.attributedTitle = [[NSAttributedString alloc] initWithString:lastUpdated];
     
+    // check the connection after refreshing the table
     [self didNotConnect:[self connected]];
     
     [refresh endRefreshing];
@@ -131,11 +132,13 @@
 
 - (BOOL)connected
 {
+    // is the internet reachable?
     return [AFNetworkReachabilityManager sharedManager].reachable;
 }
 
 - (void)didNotConnect:(BOOL)connected
 {
+    // if there's no connection, show an alert to the user
     if (connected == NO) {
         NSLog(@"No connection");
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Connection error" message:@"No connection to internet" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
@@ -178,8 +181,10 @@
     
     self.refreshControl = refresh;
     
+    // monitor for internet reachability
     [[AFNetworkReachabilityManager sharedManager] startMonitoring];
     
+    // check the connection
     [self didNotConnect:[self connected]];
     
 }
